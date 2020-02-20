@@ -29,13 +29,14 @@ Four example preference profiles in the tied-order complete format used by PrefL
 
 ### Output
 
-For a given input profile `profile.toc`, the output is four comma-separated values: the input profile filename, the number of candidates in the profile, the number of voters in the profile, and True if the given restriction is satisfied (False otherwise).
+For a given input profile `profile.toc`, the output is four comma-separated values: the input profile filename, the number of candidates in the profile, the number of voters in the profile, and `True` if the given restriction is satisfied (`False` otherwise).
 
 For example, testing the [possibly-sp.toc](examples/possibly-sp.toc) profile with the command
 ```
 python3 weakordersp.py examples/possibly-sp.toc 0
 ```
-results in the following output.
+results in the following output:
 ```
 examples/possibly-sp.toc,6,4,True
 ```
+This profile is possibly single-peaked.
