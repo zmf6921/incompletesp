@@ -1,9 +1,12 @@
-Implementation of the consecutive-ones approach for determining if a given preference profile of incomplete votes is single-peaked from "Incomplete Preferences in Single-Peaked Electorates" by Zack Fitzsimmons and Martin Lackner (https://arxiv.org/abs/1907.00752).
+Implementation of the consecutive-ones approach for determining if a given preference profile of incomplete votes is (possibly) single-peaked.
+The algorithm is described in "Incomplete Preferences in Single-Peaked Electorates" by Zack Fitzsimmons and Martin Lackner (https://arxiv.org/abs/1907.00752).
+The resulting consecutive ones instance is solved via a SAT solver,
+as it was difficult to find a fast and reliable implementation of one the polynomial-time algorithms for this problem (such as PQ-trees, Lex-BFS, etc.).
 
-## Requires
+## Requirements
 
-- PreflibTools version 1.5.(https://github.com/nmattei/PrefLib-Tools)
-- tryalgo development version (as of January 3, 2019). (https://github.com/jilljenn/tryalgo)
+- PreflibTools version 1.5 (https://github.com/nmattei/PrefLib-Tools)
+- python-sat version 0.1.5.dev6 (https://pysathq.github.io/)
 
 ## Usage
 
@@ -11,13 +14,13 @@ Implementation of the consecutive-ones approach for determining if a given prefe
 
 where `profile.toc` is a preference profile in the tied-order complete format used by the PrefLib repository (www.preflib.org) and N is one of the following values.
 
-0. To check if `profile.toc` describes a possibly single-peaked profile.
-1. To check if `profile.toc` describes a single-plateaued profile.
-2. To check if `profile.toc` describes a Black single-peaked profile.
+* 0 to check if `profile.toc` describes a possibly single-peaked profile.
+* 1 to check if `profile.toc` describes a single-plateaued profile.
+* 2 to check if `profile.toc` describes a Black single-peaked profile.
 
 ### Example Instances
 Four example preference profiles in the tied-order complete format used by PrefLib are included in the "examples" directory.
-- `possibly-sp.toc` is possibly single-peaked
+- `possibly-sp.toc` is possibly single-peaked but not single-plateaued or Black single-peaked
 - `single-plateaued.toc` is single-plateaued and so also possibly single-peaked.
 - `Black-sp.toc` is Black single-peaked and so also single-plateaued and possibly single-peaked.
 - `none.toc` is not possibly single-peaked, single-plateaued, or Black single-peaked.
