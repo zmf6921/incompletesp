@@ -1,3 +1,5 @@
+# Possibly single-peaked preferences
+
 Implementation of the consecutive-ones approach for determining if a given preference profile of incomplete votes is (possibly) single-peaked.
 The algorithm is described in "Incomplete Preferences in Single-Peaked Electorates" by Zack Fitzsimmons and Martin Lackner (https://arxiv.org/abs/1907.00752).
 The resulting consecutive ones instance is solved via a SAT solver,
@@ -10,7 +12,7 @@ as it was difficult to find a fast and reliable implementation of one the polyno
 
 ## Usage
 
-    python3 weakorder-sp.py profile.toc N
+    python3 weakordersp.py profile.toc N
 
 where `profile.toc` is a preference profile in the tied-order complete format used by the PrefLib repository (www.preflib.org) and N is one of the following values.
 
@@ -29,11 +31,11 @@ Four example preference profiles in the tied-order complete format used by PrefL
 
 For a given input profile `profile.toc`, the output is four comma-separated values: the input profile filename, the number of candidates in the profile, the number of voters in the profile, and True if the given restriction is satisfied (False otherwise).
 
-For example, testing the `possibly-sp.toc` profile with the command
+For example, testing the [possibly-sp.toc](examples/possibly-sp.toc) profile with the command
 ```
-python3 possibly-sp.toc 0
+python3 weakordersp.py examples/possibly-sp.toc 0
 ```
 results in the following output.
 ```
-possibly-sp.toc,6,4,True
+examples/possibly-sp.toc,6,4,True
 ```
