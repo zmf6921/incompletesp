@@ -2,8 +2,8 @@
 
 Implementation of the consecutive-ones approach for determining if a given preference profile of incomplete votes is (possibly) single-peaked.
 The algorithm is described in "Incomplete Preferences in Single-Peaked Electorates" by Zack Fitzsimmons and Martin Lackner (https://arxiv.org/abs/1907.00752).
-The resulting consecutive ones instance is solved via a SAT solver,
-as it was difficult to find a fast and reliable implementation of one the polynomial-time algorithms for this problem (such as PQ-trees, Lex-BFS, etc.).
+The resulting consecutive ones instance is solved via a SAT solver.
+This is a much simpler and more reliable approach than implementing the available linear-time algorithms (such as PQ-trees, Lex-BFS, etc.) and still yields very fast runtimes.
 
 ## Requirements
 
