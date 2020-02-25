@@ -1,9 +1,12 @@
-# File: weakorder-sp.py 
-# Author: Zack Fitzsimmons (zfitzsim@holycross.edu), Martin Lackner (lackner@dbai.tuwien.ac.at)
+# File: weakordersp.py
+# Authors: Zack Fitzsimmons (zfitzsim@holycross.edu),
+#          Martin Lackner (lackner@dbai.tuwien.ac.at)
+
 
 import sys
-import tryalgo.pq_tree as pq_tree
-import PreflibUtils as preflib
+import preflibtools.io as preflibio
+import consones
+
 
 def create_matrix(preference, cands, sp_type):
     num_cands = len(cands)
@@ -11,8 +14,8 @@ def create_matrix(preference, cands, sp_type):
     for i in range(len(cands)):
         pref_mat.append([0]*len(cands))
 
-    for i,a in enumerate(cands): 
-        for j,b in enumerate(cands): 
+    for i, a in enumerate(cands):
+        for j, b in enumerate(cands):
             # Lower value denotes a preferred to b
             if preference[a] < preference[b]:
                 pref_mat[i][j] = 0
@@ -25,13 +28,16 @@ def create_matrix(preference, cands, sp_type):
         positions = []
         for i in range(len(cands)):
             positions.append([])
-        for indx,c in enumerate(cands):
+        for indx, c in enumerate(cands):
             positions[preference[c]-1].append(indx)
 
         for curr in range(len(positions)):
-            # More than two candidates are tied and not the most-preferred candidates
-            # or if testing for Black-SP and more than one most-preferred candidate 
-            if (curr > 0 and len(positions[curr]) > 2) or (curr == 0 and len(positions[curr]) > 1 and sp_type == 2):
+            # More than two candidates are tied and these are
+            #  not the most-preferred candidates
+            # or if testing for Black-SP and there is
+            #  more than one most-preferred candidate
+            if (curr > 0 and len(positions[curr]) > 2) or \
+               (curr == 0 and len(positions[curr]) > 1 and sp_type == 2):
                 # Return matrix with no solution
                 rowA = [0]*num_cands
                 rowA[0] = 1
@@ -85,45 +91,46 @@ def create_matrix(preference, cands, sp_type):
 
     return pref_mat
 
-def consecutive_ones(profile_mat):
-    # For each row create a list of the columns
-    # containing a one. These rows must be consecutive.
-    constraints = []
-    for i in range(len(profile_mat)):
-        c = set()
-        for j in range(len(profile_mat[0])):
-            if profile_mat[i][j] == 1:
-                c.add(j)
-        if len(c) != 0:
-            constraints.append(c)
-    if pq_tree.consecutive_ones_property(constraints,range(len(profile_mat[0]))) is not None:
-        return True
-    return False
 
-if __name__ == "__main__":
-    if (len(sys.argv) != 3):
-        print("Usage: python3 tryalgo-sp.py election-file N")
-        print("N denotes type of SP (Possibly Single-Peaked (0), Single-Plateaued (1), or Black Single-Peaked (2).)")
-        sys.exit(0)
-    filename = str(sys.argv[1])
-    sp_type = int(sys.argv[2])
-    print("%s," %(filename), end="")
+def testsp_file(filename, sp_type, verbose=False):
+    print("%s," % (filename), end="")
 
     election_file = open(filename, 'r')
     try:
-        cmap, rmaps, rmapcounts, nvoters = preflib.read_election_file(election_file)
-    except:
-        print("0,0,Error,0.00")
+        cmap, rmaps, unused_rmapcounts, nvoters = \
+            preflibio.read_election_file(election_file)
+    except Exception:
+        print("0,0,FileError")
         sys.exit(0)
-    print("%d,%d," %(len(cmap),nvoters), end="")
-    
+    print("%d,%d," % (len(cmap), nvoters), end="")
+
     profile_mat = []
     for pref in rmaps:
         pref_mat = create_matrix(pref, cmap, sp_type)
         for row in pref_mat:
             profile_mat.append(row)
 
-    if consecutive_ones(profile_mat):
-        print("True")
+    result = consones.solve_sat(profile_mat)
+    if result is not None:
+        print("True", end="")
     else:
-        print("False")
+        print("False", end="")
+
+    if verbose:
+        print()
+        # prints the axis
+        if result is not None:
+            print("Axis:", [cmap[i+1] for i in result])
+
+
+if __name__ == "__main__":
+
+    if (len(sys.argv) != 3 or int(sys.argv[2]) not in [0, 1, 2]):
+        print("Usage: python3 tryalgo-sp.py election-file N")
+        print("N denotes type of SP (Possibly Single-Peaked (0), " +
+              "Single-Plateaued (1), or Black Single-Peaked (2).)")
+        sys.exit(0)
+    filename = str(sys.argv[1])
+    sp_type = int(sys.argv[2])
+    testsp_file(filename, sp_type, verbose=False)
+    print()
